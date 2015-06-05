@@ -9,7 +9,7 @@ I do plan to add an auto extract feature and some additional checking stuff as I
 The plan is to some how blacklist that package in sickbeard and make it select a new one out of the options It's been given.
 
 
-
+#Original ReadMe
 XG, called __X__dcc __G__rabscher, is a XDCC download manager. Grabscher is the german word for grabber :-)
 
 
