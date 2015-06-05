@@ -1,0 +1,595 @@
+/*
+//
+//  xg.css
+//  This file is part of XG - XDCC Grabscher
+//  http://www.larsformella.de/lang/en/portfolio/programme-software/xg
+//
+//  Author:
+//       Lars Formella <ich@larsformella.de>
+//
+//  Copyright (c) 2012 Lars Formella
+//
+//  This program is free software; you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation; either version 2 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+*/
+
+/** Base **/
+
+.btn, .button, a
+{
+	cursor: pointer;
+}
+
+small
+{
+	font-size: 0.7em;
+}
+
+.modal
+{
+	display: block;
+}
+
+.ng-hide
+{
+	display: none;
+}
+
+body
+{
+	margin-top: 50px;
+}
+
+.alert
+{
+	margin-bottom: 5px;
+}
+
+/** Bootstrap **/
+
+.container
+{
+	width: -webkit-calc(100% - 20px);
+	width: -moz-calc(100% - 20px);
+	width: calc(100% - 20px);
+	max-width: -webkit-calc(100% - 20px);
+	max-width: -moz-calc(100% - 20px);
+	max-width: calc(100% - 20px);
+	padding: 0;
+}
+
+.container .item
+{
+	padding: 10px;
+}
+
+.progress
+{
+	height: 6px;
+	margin-bottom: 0;
+	margin-top: 2px;
+}
+
+.progress .progress-bar-light
+{
+	opacity: 0.3;
+}
+
+.glyphiconBig
+{
+	font-size: 2em;
+}
+
+.pagination
+{
+	margin-top: 0;
+}
+
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control
+{
+	color: #888888;
+}
+
+.modal-body
+{
+	padding-bottom: 5px;
+}
+
+.form-control.ng-invalid
+{
+	border-color: #B94A48;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+}
+
+/** Table **/
+
+.table
+{
+	table-layout: fixed;
+}
+
+.table tbody + tbody, .table thead + tbody
+{
+	border-top: 1px solid #888;
+}
+
+.table tbody tr:first-child td
+{
+	border-top: none;
+}
+
+.table tbody.isOffline
+{
+	opacity: 0.5;
+}
+
+.table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td
+{
+	line-height: 16px;
+	padding: 8px 4px;
+}
+
+.table thead > tr > th
+{
+	border-bottom: 1px solid #888888;
+}
+
+.table tr:nth-child(2n)
+{
+	background: none repeat scroll 0 0 #FEFEFE;
+}
+
+.table th
+{
+	text-align: center;
+}
+
+.table th.text-right, .table td.text-right
+{
+	text-align: right;
+}
+
+.table td.withIcon
+{
+	font-size: 1.6em;
+	padding: 3px 0 0 5px;
+}
+
+.table td.withIcon2
+{
+	padding-left: 24px;
+}
+
+.table td
+{
+	height: 32px;
+}
+
+.table td.withIcon span
+{
+	position: relative;
+}
+
+.ng-table-group > td.withText, .table td.withText
+{
+	padding: 0 4px;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.ng-table-group > td.fullText, .table td.fullText
+{
+	padding: 2px 0;
+	word-wrap: break-word;
+	line-height: 1.5em;
+}
+
+td.withText span
+{
+	position: relative;
+}
+
+td.withText small
+{
+	position: absolute;
+	bottom: -16px;
+	left: 0;
+}
+
+td .highlight .name, td.bold
+{
+	font-weight: bold;
+}
+
+.table td.withProgress
+{
+	padding: 4px 4px;
+	vertical-align: middle;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.glyphicon.icon-overlay
+{
+	font-size: 0.5em;
+	position: absolute;
+	right: -8px;
+	top: 0;
+	z-index: 1;
+	text-shadow: #fff -2px -2px, #fff -2px 2px, #fff 2px -2px, #fff 2px 2px;
+}
+
+.clickAble
+{
+	cursor: pointer;
+}
+
+/** Grids **/
+
+#ServerGrid, #ChannelGrid
+{
+	width: 348px;
+	height: 320px;
+	margin-bottom: 10px;
+}
+
+#ChannelGrid
+{
+	width: 500px;
+}
+
+#NotificationGrid
+{
+	width: 640px;
+	height: 320px;
+}
+
+/** Dialogs **/
+
+.serverChannelDialog .modal-dialog
+{
+	width: 940px;
+}
+
+.serverChannelDialog .tableDiv
+{
+	height: 440px;
+}
+
+.serverChannelDialog .table, .serverChannelDialog .pagination {
+	margin-bottom: 10px;
+}
+
+.serverChannelDialog .pagination > li > a
+{
+	padding: 0 8px;
+}
+
+.serverChannelDialog .form-horizontal
+{
+	margin-top: 3px;
+}
+
+.configDialog .modal-dialog
+{
+	width: 850px;
+}
+
+.configDialog .form-group
+{
+	margin-bottom: 10px;
+}
+
+.configDialog .list-group
+{
+	margin-bottom: 0;
+}
+
+.configDialog .list-group-item
+{
+	padding: 5px;
+}
+
+.configDialog .nav-tabs
+{
+	margin-bottom: 10px;
+}
+
+.configDialog .panel
+{
+	margin-bottom: 10px;
+}
+
+.configDialog .panel-heading, .configDialog .panel-body
+{
+	padding: 5px;
+}
+
+.configDialog .panel-heading .glyphicon, .configDialog .panel-body .glyphicon
+{
+	font-size: 1.5em;
+	padding-top: 7px;
+}
+
+.configDialog input[type="checkbox"]
+{
+	margin: 10px 0 0;
+}
+
+.apiDialog .modal-dialog
+{
+	width: 700px;
+}
+
+.passwordDialog .modal-dialog
+{
+	width: 350px;
+}
+
+/** Menu **/
+
+.navbar
+{
+	margin-bottom: 10px;
+	min-height: 44px;
+}
+
+.navbar-brand
+{
+	padding: 10px 15px;
+	height: auto;
+}
+
+.navbar .nav > li > a
+{
+	margin: 3px 0 0;
+	padding: 3px 15px 0;
+	border-radius: 10px;
+}
+
+.navbar .navbar-form
+{
+	margin-top: 2px;
+	margin-bottom: 2px;
+	padding: 0 2px 0 0;
+}
+
+#search-area
+{
+	max-width: 500px;
+	width: calc(100% - 550px);
+}
+
+#searchForm
+{
+	width: calc(100% - 25px);
+}
+
+#searchForm .dropdown-menu
+{
+	overflow: hidden;
+	overflow-y: auto;
+	min-width: 100%;
+}
+
+#searchForm .dropdown-menu .text
+{
+	margin-right: 60px;
+}
+
+#searchForm .dropdown-menu > li
+{
+	position: relative;
+}
+
+#searchForm .dropdown-menu > li > a
+{
+	padding-left: 25px;
+}
+
+#searchForm .dropdown-menu > li > .glyphicon
+{
+	position: absolute;
+	top: 8px;
+	left: 5px;
+}
+
+#searchForm .form-group
+{
+	width: calc(100% - 44px);
+}
+
+#searchForm .form-group .input-group
+{
+	width: 100%;;
+}
+
+#searchForm .search-query
+{
+	width: calc(100% - 125px);
+}
+
+#searchForm .search-size
+{
+	border-left: medium none;
+	width: 65px;
+}
+
+#searchForm .search-format
+{
+	border-left: medium none;
+	width: 60px;
+}
+
+#searchLoading
+{
+	margin-right: 4px;
+	margin-top: 12px;
+	float: left;
+}
+
+#notificationsLink + .dropdown-menu
+{
+	left: -410px;
+}
+
+#notifications .label
+{
+	left: 6px;
+	padding-left: 4px;
+	padding-right: 3px;
+	position: absolute;
+	top: 2px;
+	font-size: 0.8em;
+}
+
+#notifications .dropdown-menu
+{
+	height: 400px;
+	width: 800px;
+	left: -200px;
+	overflow: scroll;
+}
+
+#settings .dropdown-menu
+{
+	width: 228px;
+}
+
+#settings .btn-group
+{
+	display: block;
+}
+
+/* Snapshots */
+
+#snapshot .panel
+{
+	margin-bottom: 5px;
+}
+
+#snapshot .panel-heading
+{
+	padding: 3px 9px;
+}
+
+#snapshot .panel-body
+{
+	padding: 0 5px;
+}
+
+#snapshot .btn-group
+{
+	width: 100%;
+}
+
+#snapshot button, #snapshot label
+{
+	margin-bottom: 2px;
+	margin-top: 2px;
+	padding: 2px 4px;
+	width: 33%;
+}
+
+#snapshot button
+{
+	width: 100%;
+}
+
+#snapshot .col-md-2, #snapshot .col-md-10
+{
+	padding-left: 0;
+}
+
+#snapshot .axisLabels
+{
+	color: #777777 !important;
+}
+
+/* Dasboard */
+
+.dashboardItem
+{
+	float: left;
+	margin: 10px;
+	width: calc(25% - 20px);
+	min-width: 280px;
+}
+
+.dashboardItem .glyphicon
+{
+	margin-right: 10px;
+}
+
+.dashboardItem .panel-body
+{
+	height: 110px;
+	position: relative;
+}
+
+.dashboardItem .panel-body > div
+{
+	position: absolute;
+}
+
+.dashboardItem .panel-body > div:nth-child(2)
+{
+	left: 30px;
+	top: 30px;
+}
+
+.dashboardItem .panel-body > div:nth-child(3)
+{
+	position: inherit;
+	padding-left: 120px;
+}
+
+/* Animate */
+
+.ng-hide
+{
+	opacity:0;
+}
+
+.ng-hide-add, #search-area.ng-hide-remove
+{
+	display:block!important;
+}
+
+#searchLoading
+{
+	opacity:1;
+}
+
+#searchLoading.ng-hide
+{
+	opacity:0;
+}
+
+#search-area.ng-hide-remove
+{
+	-webkit-animation: fadeInLeft 0.5s;
+	-moz-animation: fadeInLeft 0.5s;
+	-ms-animation: fadeInLeft 0.5s;
+	animation: fadeInLeft 0.5s;
+}
+
+#search-area.ng-hide-add
+{
+	-webkit-animation: fadeOutLeft 0.5s;
+	-moz-animation: fadeOutLeft 0.5s;
+	-ms-animation: fadeOutLeft 0.5s;
+	animation: fadeOutLeft 0.5s;
+}

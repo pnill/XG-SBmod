@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+
+<!--
+//
+//  index.html
+//  This file is part of XG - XDCC Grabscher
+//  http://www.larsformella.de/lang/en/portfolio/programme-software/xg
+//
+//  Author:
+//       Lars Formella <ich@larsformella.de>
+//
+//  Copyright (c) 2012 Lars Formella
+//
+//  This program is free software; you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation; either version 2 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+-->
+
+<html lang="en" ng-app="xg" ng-controller="MainCtrl" manifest="/3.3.0.0/Resources/xg.appcache">
+	<head>
+		<meta charset="utf-8">
+		<title>XG Webfrontend v{{VERSION}}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="./css/init.css" type="text/css" media="screen"/>
+		<link rel="shortcut icon" href="favicon.ico">
+	</head>
+
+	<body>
+
+		<div>
+			<nav class="navbar navbar-default navbar-fixed-top ng-hide" role="navigation" ng-show="passwordOk">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">XG v{{VERSION}}</a>
+				</div>
+				<div class="collapse navbar-collapse navbar-ex1-collapse">
+					<ul class="nav navbar-nav">
+						<li ng-class="{'active': slide == 1}">
+							<a href="#" ng-click="slideTo(1)">
+								<span class="glyphicon glyphicon-dashboard glyphiconBig" title="{{'Dashboard'|translate}}"></span>
+							</a>
+						</li>
+						<li ng-class="{'active': slide == 2}">
+							<a href="#" ng-click="slideTo(2)">
+								<span class="glyphicon glyphicon-list-alt glyphiconBig" title="{{'IRC View'|translate}}"></span>
+							</a>
+						</li>
+						<li ng-class="{'active': slide == 3}" ng-show="REMOTE_SETTINGS.ExternalSearch.Enabled">
+							<a href="#" ng-click="slideTo(3)">
+								<span class="glyphicon glyphicon-cloud-download glyphiconBig" title="{{'External search'|translate}}"></span>
+							</a>
+						</li>
+						<li ng-class="{'active': slide == 4}">
+							<a href="#" ng-click="slideTo(4)">
+								<span class="glyphicon glyphicon-hdd glyphiconBig" title="{{'Files'|translate}}"></span>
+							</a>
+						</li>
+						<li ng-class="{'active': slide == 5}">
+							<a href="#" ng-click="slideTo(5)">
+								<span class="glyphicon glyphicon-stats glyphiconBig" title="{{'Graphs'|translate}}"></span>
+							</a>
+						</li>
+						<li id="notifications" class="dropdown" ng-controller="NotificationCtrl">
+							<a class="dropdown-toggle" ng-click="counter = 0; refresh()">
+								<span class="glyphicon glyphicon-exclamation-sign glyphiconBig" title="{{'Notifications'|translate}}"></span>
+								<span class="label label-danger" ng-show="counter > 0">{{counter}}</span>
+							</a>
+							<div class="dropdown-menu">
+								<h3 class="popover-title" translate>Notifications</h3>
+								<div class="popover-content">
+									<table ng-table="tableParams" class="table">
+										<thead>
+											<tr>
+												<th width="40"></th>
+												<th translate>
+													Content
+												</th>
+												<th width="190" translate>
+													Time
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="notification in $data">
+												<td class="withIcon">
+													<span ng-bind-html='notification|formatNotificationIcon'></span>
+												</td>
+												<td class="fullText">
+													<span ng-bind-html='notification|formatNotificationContent|trustAsHtml'></span>
+												</td>
+												<td class="text-right">
+													{{notification.Time|date2Human}}
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</li>
+						<li id="settings" class="dropdown">
+							<a class="dropdown-toggle">
+								<span class="glyphicon glyphicon-cog glyphiconBig" title="{{'Settings'|translate}}"></span>
+							</a>
+							<ul class="dropdown-menu">
+								<li>
+									<a ng-click="openServerChannelsDialog()">
+										<span class="glyphicon glyphicon-globe"></span>
+										<span translate>Server / Channels</span>
+									</a>
+								</li>
+								<li>
+									<a ng-click="openXdccDialog()">
+										<span class="glyphicon glyphicon-cloud-download"></span>
+										<span translate>XDCC link input</span>
+									</a>
+								</li>
+								<li>
+									<a ng-click="openApiDialog()">
+										<span class="glyphicon glyphicon-fire"></span>
+										<span translate>Api Keys</span>
+									</a>
+								</li>
+								<li>
+									<a ng-click="openConfigDialog()">
+										<span class="glyphicon glyphicon-wrench"></span>
+										<span translate>Config</span>
+									</a>
+								</li>
+								<li>
+									<a ng-click="openShutdownDialog()">
+										<span class="glyphicon glyphicon-remove-sign"></span>
+										<span translate>Shutdown</span>
+									</a>
+								</li>
+								<li class="divider"></li>
+								<li>
+									<a ng-click="flipSetting('showOfflineBots')" ng-class="{'ScarletRedDark': settings.showOfflineBots, 'Aluminium1Dark': !settings.showOfflineBots}">
+										<span class="glyphicon glyphicon-eye-open"></span>
+										<span translate>Show offline Bots</span>
+									</a>
+								</li>
+								<li>
+									<a ng-click="flipSetting('humanDates')" ng-class="{'ScarletRedDark': settings.humanDates, 'Aluminium1Dark': !settings.humanDates}">
+										<span class="glyphicon glyphicon-time"></span>
+										<span translate>Human readable dates</span>
+									</a>
+								</li>
+								<li class="divider"></li>
+								<li class="dropdown-header">
+									<span translate>Group Search Results By</span>
+									<div class="btn-group">
+										<label class="btn btn-info" ng-model="groupBy" btn-radio="'ParentGuid'" uncheckable><span translate>Bots</span></label>
+										<label class="btn btn-info" ng-model="groupBy" btn-radio="'GroupBy'" uncheckable><span translate>Search</span></label>
+										<label class="btn btn-info" ng-model="groupBy" btn-radio="'Guid'" uncheckable><span translate>None</span></label>
+									</div>
+								</li>
+							</ul>
+						</li>
+					</ul>
+					<div id="search-area" ng-show="slide == 2 || slide == 3" ng-controller="SearchCtrl" class="navbar-form pull-right">
+						<div id="searchLoading" ng-show="loading" class="glyphicon glyphicon-asterisk animate-spin ScarletRedDark"></div>
+						<div id="searchForm" class="input-append dropdown navbar-form pull-right">
+							<div class="form-group dropdown-toggle">
+								<div class="input-group">
+									<input type="text" class="search-query form-control" placeholder="{{'Search'|translate}}" ng-model="search" ng-keydown="searchKeydown($event)"/>
+									<input type="text" class="search-size form-control" placeholder="{{'Size'|translate}}" ng-model="size" ng-keydown="searchKeydown($event)">
+									<select class="search-format form-control" ng-model="format" ng-options="f for f in formats" ng-change="triggerSearch()"><option></option></select>
+								</div>
+							</div>
+							<button class="btn btn-default" type="button" ng-show="!signalr.isObject(search, getRealSize())" ng-click="signalr.add(getRealSize(), search)" title="{{'Save'|translate}}">
+								<span class="glyphicon glyphicon-thumbs-up"></span>
+							</button>
+							<button class="btn btn-default" type="button" ng-show="signalr.isObject(search, getRealSize())" ng-click="signalr.removeByParameter(search, size)" title="{{'Remove'|translate}}">
+								<span class="glyphicon glyphicon-thumbs-down"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li class="dropdown-header" translate>Predefined</li>
+								<li ng-repeat="search in predefinedSearches">
+									<a href="#" ng-click="$parent.searchClicked(search)">
+										<span class="text" title="{{search.Name}}">{{search.Name}}</span>
+									</a>
+								</li>
+								<li class="divider"></li>
+								<li class="dropdown-header" translate>Custom</li>
+								<li ng-repeat="search in objects">
+									<span class="glyphicon glyphicon-remove-circle ScarletRedMiddle clickAble" ng-click="$parent.removeSearch($event, search)" title="{{'Remove'|translate}}"></span>
+									<a href="#" ng-click="$parent.searchClicked(search)">
+										<span class="resultsOnline label label-success pull-right">{{search.ResultsOnline}}</span>
+										<span class="resultsOffline label label-default pull-right">{{search.ResultsOffline}}</span>
+										<span class="text" title="{{search.Name}}" ng-bind-html="search|formatSearchString"></span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</nav>
+			<div class="container ng-hide" ng-show="passwordOk">
+
+				<alert ng-show="REMOTE_SETTINGS.Version.ShowWarning" type="success" close="REMOTE_SETTINGS.Version.ShowWarning = false"><span ng-bind-html='REMOTE_SETTINGS.Version|formatVersionWarning' /></alert>
+
+				<alert ng-repeat="message in REMOTE_SETTINGS.Messages"  ng-show="message.Enabled" type="{{message.type}}" close="message.Enabled = false"><span ng-bind-html='message.Text' /></alert>
+
+				<div ng-show="slide == 1" ng-controller="DashboardCtrl">
+
+					<div class="panel panel-default dashboardItem">
+						<div class="panel-heading">
+							<h3 class="panel-title icons-globe" translate> Servers</h3>
+						</div>
+						<div class="panel-body">
+							<div>
+								<input knob thickness="0.25" max="2" current="21" snapshot="snapshot" size="100">
+							</div>
+							<div>
+								<input knob thickness="0.1" max="2" current="3" snapshot="snapshot" size="70">
+							</div>
+							<div>
+								{{snapshot[3]}} <span translate>of</span> {{snapshot[21]}} <span class="value" translate>connected</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="panel panel-default dashboardItem">
+						<div class="panel-heading">
+							<h3 class="panel-title icons-comment" translate> Channels</h3>
+						</div>
+						<div class="panel-body">
+							<div>
+								<input knob thickness="0.25" max="5" current="23" snapshot="snapshot" size="100">
+							</div>
+							<div>
+								<input knob thickness="0.1" max="5" current="6" snapshot="snapshot" size="70">
+							</div>
+							<div>
+								{{snapshot[6]}} <span translate>of</span> {{snapshot[23]}} <span class="value" translate>connected</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="panel panel-default dashboardItem">
+						<div class="panel-heading">
+							<h3 class="panel-title icons-user" translate> Bots</h3>
+						</div>
+						<div class="panel-body">
+							<div>
+								<input knob thickness="0.25" max="8" current="9" snapshot="snapshot" size="100">
+							</div>
+							<div></div>
+							<div>
+								{{snapshot[9]}} <span translate>of</span> {{snapshot[8]}} <span translate>online</span>
+							</div>
+						</div>
+					</div>
+
+					<div ng-show="snapshot[29] > 0" class="panel panel-default dashboardItem">
+						<div class="panel-heading">
+							<h3 class="panel-title icons-doc-text" translate> Files</h3>
+						</div>
+						<div class="panel-body">
+							<div>
+								<input knob thickness="0.25" max="30" current="27" snapshot="snapshot" size="100">
+							</div>
+							<div></div>
+							<div>
+								{{snapshot[27]|size2Human}}  <span translate>of</span> {{snapshot[30]|size2Human}} <span class="value" translate>downloaded</span>
+							</div>
+						</div>
+						<div class="panel-footer">
+							<span translate>Ready</span>: {{snapshot[29]|time2Human}}
+						</div>
+					</div>
+
+				</div>
+				<div ng-show="slide == 2" ng-controller="PacketCtrl" class="item">
+
+					<table ng-table="tableParams" class="table">
+						<thead>
+							<tr>
+								<th class="text-right sortable" width="52" ng-click="tableParams.sorting({'Id' : tableParams.isSortBy('Id', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('Id', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('Id', 'desc')}"></span>
+									<span translate>Id</span>
+								</th>
+								<th width="37"></th>
+								<th class="sortable" ng-click="tableParams.sorting({'Name' : tableParams.isSortBy('Name', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('Name', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('Name', 'desc')}"></span>
+									<span translate>Name</span>
+								</th>
+								<th width="70" class="text-right sortable" ng-click="tableParams.sorting({'Size' : tableParams.isSortBy('Size', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('Size', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('Size', 'desc')}"></span>
+									<span translate>Size</span>
+								</th>
+								<th width="140" class="text-right sortable" ng-click="tableParams.sorting({'Speed' : tableParams.isSortBy('Speed', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('Speed', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('Speed', 'desc')}"></span>
+									<span translate>Speed</span>
+								</th>
+								<th width="170" class="sortable" ng-click="tableParams.sorting({'TimeMissing' : tableParams.isSortBy('TimeMissing', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('TimeMissing', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('TimeMissing', 'desc')}"></span>
+									<span translate>Time Missing</span>
+								</th>
+								<th width="155" class="sortable" ng-click="tableParams.sorting({'LastMentioned' : tableParams.isSortBy('LastMentioned', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('LastMentioned', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('LastMentioned', 'desc')}"></span>
+									<span translate>Last Mentioned</span>
+								</th>
+							</tr>
+						</thead>
+						<tbody ng-repeat="group in $groups" ng-class="{'isOffline': settings.groupBy == 'ParentGuid' && !$parent.parents[group.value].Connected}">
+							<tr class="ng-table-group" ng-show="settings.groupBy == 'ParentGuid'">
+								<td class="withIcon withIcon2">
+									<span class="clickAble" ng-click="$parent.searchByBot($parent.parents[group.value])" title="{{'Just display packets from this bot'|translate}}">
+										<i class="glyphicon glyphicon-search Aluminium1Middle"></i>
+									</span>
+								</td>
+								<td class="withIcon">
+									<span ng-bind-html='$parent.parents[group.value]|formatBotIcon'></span>
+								</td>
+								<td colspan="2" class="withText">
+									<span ng-bind-html='$parent.parents[group.value]|formatBotName'></span>
+								</td>
+								<td class="text-right">
+									{{$parent.parents[group.value]|formatBotSpeed}}
+								</td>
+								<td></td>
+								<td class="text-right">
+									{{$parent.parents[group.value].LastContact|date2Human}}
+								</td>
+							</tr>
+							<tr class="ng-table-group" ng-show="settings.groupBy == 'GroupBy'">
+								<td colspan="2"></td>
+								<td colspan="5" class="bold">{{group.value}}</td>
+							</tr>
+							<tr ng-repeat="packet in group.data">
+								<td class="text-right">
+									#{{packet.Id}}
+								</td>
+								<td class="withIcon">
+									<span class="clickAble" ng-bind-html='packet|formatPacketIcon' ng-click="$parent.signalr.flip(packet)"></span>
+								</td>
+								<td class="withProgress">
+									<span ng-bind-html='packet|formatPacketName|trustAsHtml'></span>
+								</td>
+								<td class="text-right">
+									{{packet.Size|size2Human}}
+								</td>
+								<td class="text-right">
+									<span ng-if="packet.Connected"><strong>{{packet.Speed|speed2Human}}</strong></span>
+									<span ng-if="!packet.Connected && packet.Next && $parent.parents[group.value].QueuePosition > 0"><strong>pos. {{$parent.parents[group.value].QueuePosition}}</strong></span>
+								</td>
+								<td>
+									<span ng-if="packet.Connected"><strong>{{packet.TimeMissing|time2Human}}</strong></span>
+									<span ng-if="!packet.Connected && packet.Next && $parent.parents[group.value].QueuePosition > 0"><strong>{{$parent.parents[group.value].QueueTime|time2Human}}</strong></span>
+								</td>
+								<td class="text-right">
+									{{packet.LastMentioned|date2Human}}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+				<div ng-show="slide == 3" ng-controller="ExternalCtrl" class="item">
+
+					<table ng-table="tableParams" class="table">
+						<thead>
+							<tr>
+								<th class="text-right sortable" width="52" ng-click="tableParams.sorting({'Id' : tableParams.isSortBy('Id', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('Id', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('Id', 'desc')}"></span>
+									<span translate>Id</span>
+								</th>
+								<th width="30"></th>
+								<th class="sortable" ng-click="tableParams.sorting({'Name' : tableParams.isSortBy('Name', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('Name', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('Name', 'desc')}"></span>
+									<span translate>Name</span>
+								</th>
+								<th width="70" class="text-right sortable" ng-click="tableParams.sorting({'Size' : tableParams.isSortBy('Size', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('Size', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('Size', 'desc')}"></span>
+									<span translate>Size</span>
+								</th>
+								<th width="170" class="sortable" ng-click="tableParams.sorting({'BotName' : tableParams.isSortBy('BotName', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('BotName', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('BotName', 'desc')}"></span>
+									<span translate>Bot Name</span>
+								</th>
+								<th width="140" class="text-right sortable" ng-click="tableParams.sorting({'BotSpeed' : tableParams.isSortBy('BotSpeed', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('BotSpeed', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('BotSpeed', 'desc')}"></span>
+									<span translate>Bot Speed</span>
+								</th>
+								<th width="155" class="sortable" ng-click="tableParams.sorting({'LastMentioned' : tableParams.isSortBy('LastMentioned', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('LastMentioned', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('LastMentioned', 'desc')}"></span>
+									<span translate>Last Mentioned</span>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="packet in $data">
+								<td class="text-right">
+									#{{packet.Id}}
+								</td>
+								<td class="withIcon">
+									<span class="clickAble" ng-bind-html='packet|formatPacketIcon' ng-click="$parent.signalr.server.parseXdccLink(IrcLink)"></span>
+								</td>
+								<td>
+									<span ng-bind-html='packet|formatPacketName|trustAsHtml'></span>
+								</td>
+								<td class="text-right">
+									{{packet.Size|size2Human}}
+								</td>
+								<td>
+									{{packet.BotName}}
+								</td>
+								<td class="text-right">
+									{{packet.BotSpeed|speed2Human}}
+								</td>
+								<td class="text-right">
+									{{packet.LastMentioned|date2Human}}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+				<div ng-show="slide == 4" ng-controller="FileCtrl" class="item">
+
+					<table ng-table="tableParams" class="table">
+						<thead>
+							<tr>
+								<th width="32"></th>
+								<th class="sortable" ng-click="tableParams.sorting({'Name' : tableParams.isSortBy('Name', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('Name', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('Name', 'desc')}"></span>
+									<span translate>Name</span>
+								</th>
+								<th width="70" class="text-right sortable" ng-click="tableParams.sorting({'Size' : tableParams.isSortBy('Size', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('Size', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('Size', 'desc')}"></span>
+									<span translate>Size</span>
+								</th>
+								<th width="140" class="text-right sortable" ng-click="tableParams.sorting({'Speed' : tableParams.isSortBy('Speed', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('Speed', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('Speed', 'desc')}"></span>
+									<span translate>Speed</span>
+								</th>
+								<th width="170" class="sortable" ng-click="tableParams.sorting({'TimeMissing' : tableParams.isSortBy('TimeMissing', 'asc') ? 'desc' : 'asc'})">
+									<span ng-class="{'glyphicon glyphicon-sort-by-alphabet': tableParams.isSortBy('TimeMissing', 'asc'), 'glyphicon glyphicon-sort-by-alphabet-alt': tableParams.isSortBy('TimeMissing', 'desc')}"></span>
+									<span translate>Time Missing</span>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="file in $data">
+								<td class="withIcon">
+									<span class="clickAble" ng-bind-html='file|formatFileIcon' ng-click="$parent.signalr.remove(file)"></span>
+								</td>
+								<td class="withProgress">
+									<span ng-bind-html='file|formatFileName|trustAsHtml'></span>
+								</td>
+								<td class="text-right">
+									{{file.Size|size2Human}}
+								</td>
+								<td class="text-right">
+									{{file.Speed|speed2Human}}
+								</td>
+								<td class="text-right">
+									{{file.TimeMissing|time2Human}}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+				<div ng-show="slide == 5" ng-controller="SnapshotCtrl" id="snapshot" class="item">
+
+					<div class="col-md-2">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title" translate>Timespan</h4>
+							</div>
+							<div class="panel-collapse">
+								<div class="panel-body">
+									<div class="btn-group">
+										<label class="btn btn-primary btn-sm" ng-model="days" btn-radio="1"><span translate>1 Day</span></label>
+										<label class="btn btn-primary btn-sm" ng-model="days" btn-radio="7"><span translate>1 Week</span></label>
+										<label class="btn btn-primary btn-sm" ng-model="days" btn-radio="31"><span translate>1 Month</span></label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default" ng-repeat="group in groups">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a class="accordion-toggle" ng-click="group.collapsed = !group.collapsed">
+										{{group.name}}
+									</a>
+								</h4>
+							</div>
+							<div class="panel-collapse" ng-show="group.collapsed">
+								<div class="panel-body">
+									<div ng-repeat="type in group.types">
+										<button type="button" class="btn btn-success btn-sm" ng-model="type.enabled" btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0" translate>Snapshot_{{type.id}}</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-10">
+						<div flot days="days" groups="groups" snapshots="snapshots" style="height: 550px; width: 1000px;"></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<script data-main="js/init" src="../Scripts/require.js"></script>
+
+	</body>
+</html>

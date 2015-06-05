@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E978DE8D-E01F-4F2D-B939-254A4308ED2B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>XG.Plugin.Webserver</RootNamespace>
+    <AssemblyName>XG.Plugin.Webserver</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Build.Wix|AnyCPU'">
+    <OutputPath>bin\Build.Wix\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Build.Mono|AnyCPU'">
+    <OutputPath>bin\Build.Mono\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Db4objects.Db4o.Data.Services">
+      <HintPath>..\packages\db4o-devel.8.1.184.15492\lib\net40\Db4objects.Db4o.Data.Services.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o.Linq">
+      <HintPath>..\packages\db4o-devel.8.1.184.15492\lib\net40\Db4objects.Db4o.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Reflection">
+      <HintPath>..\packages\db4o-devel.8.1.184.15492\lib\net40\Mono.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpRobin">
+      <HintPath>..\packages\SharpRobin\SharpRobin.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationServer.Caching.Client">
+      <HintPath>..\packages\Cache.1.2.1\Microsoft.ApplicationServer.Caching.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="CacheAspect">
+      <HintPath>..\packages\Cache.1.2.1\CacheAspect.dll</HintPath>
+    </Reference>
+    <Reference Include="PostSharp">
+      <HintPath>..\packages\Cache.1.2.1\PostSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o">
+      <HintPath>..\packages\db4o-devel.8.1.184.15492\lib\net40\Db4objects.Db4o.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="Nancy.Validation.DataAnnotations">
+      <HintPath>..\packages\Nancy.Validation.DataAnnotations.0.23.0\lib\net40\Nancy.Validation.DataAnnotations.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy.Validation.FluentValidation">
+      <HintPath>..\packages\Nancy.Validation.FluentValidation.0.23.0\lib\net40\Nancy.Validation.FluentValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net">
+      <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Nowin">
+      <HintPath>..\packages\Nowin.0.12.1.0\lib\net45\Nowin.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy.Serialization.JsonNet">
+      <HintPath>..\packages\Nancy.Serialization.JsonNet.0.23.2\lib\net40\Nancy.Serialization.JsonNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy.Owin">
+      <HintPath>..\packages\Nancy.Owin.0.23.2\lib\net40\Nancy.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy">
+      <HintPath>..\packages\Nancy.0.23.2\lib\net40\Nancy.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.HttpListener">
+      <HintPath>..\packages\Microsoft.Owin.Host.HttpListener.2.1.0\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Hosting">
+      <HintPath>..\packages\Microsoft.Owin.Hosting.2.1.0\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Diagnostics">
+      <HintPath>..\packages\Microsoft.Owin.Diagnostics.2.1.0\lib\net40\Microsoft.Owin.Diagnostics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.1.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security">
+      <HintPath>..\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentValidation">
+      <HintPath>..\packages\FluentValidation.5.4.0.0\lib\Net40\FluentValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="Quartz">
+      <HintPath>..\packages\Quartz.2.2.4\lib\net40\Quartz.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging">
+      <HintPath>..\packages\Common.Logging.2.1.2\lib\net40\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Nancy\ShutdownModule.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StartUp.cs" />
+    <Compile Include="SignalR\Hub\Model\Domain\AObject.cs" />
+    <Compile Include="SignalR\Hub\Model\Domain\Bot.cs" />
+    <Compile Include="SignalR\Hub\Model\Domain\Channel.cs" />
+    <Compile Include="SignalR\Hub\Model\Domain\ExternalSearch.cs" />
+    <Compile Include="SignalR\Hub\Model\Domain\File.cs" />
+    <Compile Include="SignalR\Hub\Model\Domain\Flot.cs" />
+    <Compile Include="SignalR\Hub\Model\Domain\Notification.cs" />
+    <Compile Include="SignalR\Hub\Model\Domain\Packet.cs" />
+    <Compile Include="SignalR\Hub\Model\Domain\Server.cs" />
+    <Compile Include="SignalR\Hub\Helper.cs" />
+    <Compile Include="SignalR\EventForwarder.cs" />
+    <Compile Include="SignalR\Hub\Model\Domain\Result.cs" />
+    <Compile Include="SignalR\Hub\HubAuthorizeAttribute.cs" />
+    <Compile Include="SignalR\Hub\PacketHub.cs" />
+    <Compile Include="SignalR\Hub\SearchHub.cs" />
+    <Compile Include="SignalR\Hub\SnapshotHub.cs" />
+    <Compile Include="SignalR\Hub\FileHub.cs" />
+    <Compile Include="SignalR\Hub\AObjectHub.cs" />
+    <Compile Include="SignalR\Hub\ServerHub.cs" />
+    <Compile Include="SignalR\Hub\NotificationHub.cs" />
+    <Compile Include="SignalR\Hub\ChannelHub.cs" />
+    <Compile Include="SignalR\Hub\Model\Client.cs" />
+    <Compile Include="SignalR\Hub\ExternalHub.cs" />
+    <Compile Include="DoubleConverter.cs" />
+    <Compile Include="SignalR\Hub\Model\Domain\ExternalSearchEntry.cs" />
+    <Compile Include="SignalR\Hub\ApiHub.cs" />
+    <Compile Include="Nancy\LoginModule.cs" />
+    <Compile Include="Nancy\CustomBootstrapper.cs" />
+    <Compile Include="Nancy\RedirectModule.cs" />
+    <Compile Include="Nancy\Api\ApiModule.cs" />
+    <Compile Include="Nancy\Helper.cs" />
+    <Compile Include="ASaltedPassword.cs" />
+    <Compile Include="SignalR\Hub\Model\Domain\Config.cs" />
+    <Compile Include="SignalR\Hub\ConfigHub.cs" />
+    <Compile Include="SignalR\Hub\Model\Domain\Search.cs" />
+    <Compile Include="SignalR\Hub\Model\Domain\ApiKey.cs" />
+    <Compile Include="SignalR\Hub\Model\Domain\Extension.cs" />
+    <Compile Include="Nancy\Api\Request\ARequest.cs" />
+    <Compile Include="Nancy\Api\Result\Default.cs" />
+    <Compile Include="Nancy\Api\Request\ChannelAdd.cs" />
+    <Compile Include="Nancy\Api\Request\PacketDownload.cs" />
+    <Compile Include="Nancy\Api\Request\PacketSearch.cs" />
+    <Compile Include="Nancy\Api\Request\ServerAdd.cs" />
+    <Compile Include="Nancy\Api\Bots.cs" />
+    <Compile Include="Nancy\Api\Channels.cs" />
+    <Compile Include="Nancy\Api\Packets.cs" />
+    <Compile Include="Nancy\Api\Searches.cs" />
+    <Compile Include="Nancy\Api\Servers.cs" />
+    <Compile Include="Nancy\Authentication\ApiKeyAuthentication.cs" />
+    <Compile Include="Nancy\Authentication\ApiKeyHttpExtensions.cs" />
+    <Compile Include="Nancy\Authentication\ApiKeyUserIdentity.cs" />
+    <Compile Include="Nancy\Api\Model\Domain\AObject.cs" />
+    <Compile Include="Nancy\Api\Model\Domain\Bot.cs" />
+    <Compile Include="Nancy\Api\Model\Domain\Channel.cs" />
+    <Compile Include="Nancy\Api\Model\Domain\File.cs" />
+    <Compile Include="Nancy\Api\Model\Domain\Packet.cs" />
+    <Compile Include="Nancy\Api\Model\Domain\Search.cs" />
+    <Compile Include="Nancy\Api\Model\Domain\Server.cs" />
+    <Compile Include="Nancy\Api\Files.cs" />
+    <Compile Include="Nancy\Api\Result\Objects.cs" />
+    <Compile Include="Nancy\Api\Request\SearchAdd.cs" />
+    <Compile Include="Search\Result.cs" />
+    <Compile Include="Search\Packets.cs" />
+    <Compile Include="Job\SearchUpdater.cs" />
+    <Compile Include="Search\Results.cs" />
+    <Compile Include="Search\WildcardQuery.cs" />
+    <Compile Include="RemoteSettings.cs" />
+    <Compile Include="Job\RemoteSettingsLoader.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\js\config\index.js" />
+    <EmbeddedResource Include="Resources\js\config\module.js" />
+    <EmbeddedResource Include="Resources\js\controller\file.js" />
+    <EmbeddedResource Include="Resources\js\controller\index.js" />
+    <EmbeddedResource Include="Resources\js\controller\module.js" />
+    <EmbeddedResource Include="Resources\js\controller\packet.js" />
+    <EmbeddedResource Include="Resources\js\controller\search.js" />
+    <EmbeddedResource Include="Resources\js\filter\helper.js" />
+    <EmbeddedResource Include="Resources\js\filter\index.js" />
+    <EmbeddedResource Include="Resources\js\filter\module.js" />
+    <EmbeddedResource Include="Resources\js\filter\formatter\base.js" />
+    <EmbeddedResource Include="Resources\js\filter\formatter\bot.js" />
+    <EmbeddedResource Include="Resources\js\filter\formatter\file.js" />
+    <EmbeddedResource Include="Resources\js\filter\formatter\index.js" />
+    <EmbeddedResource Include="Resources\js\filter\formatter\module.js" />
+    <EmbeddedResource Include="Resources\js\filter\formatter\packet.js" />
+    <EmbeddedResource Include="Resources\js\i18n\de.js" />
+    <EmbeddedResource Include="Resources\js\i18n\en.js" />
+    <EmbeddedResource Include="Resources\js\i18n\index.js" />
+    <EmbeddedResource Include="Resources\js\i18n\module.js" />
+    <EmbeddedResource Include="Resources\js\service\helper.js" />
+    <EmbeddedResource Include="Resources\js\service\index.js" />
+    <EmbeddedResource Include="Resources\js\service\module.js" />
+    <EmbeddedResource Include="Resources\js\service\signalr.js" />
+    <EmbeddedResource Include="Resources\js\bootstrap.js" />
+    <EmbeddedResource Include="Resources\js\init.js" />
+    <EmbeddedResource Include="Resources\js\factory\index.js" />
+    <EmbeddedResource Include="Resources\js\factory\module.js" />
+    <EmbeddedResource Include="Resources\js\factory\signalr.js" />
+    <EmbeddedResource Include="Resources\js\factory\signalr-table.js" />
+    <EmbeddedResource Include="Resources\js\config\enum.js" />
+    <EmbeddedResource Include="Resources\js\controller\dialog\api.js" />
+    <EmbeddedResource Include="Resources\js\controller\external.js" />
+    <EmbeddedResource Include="Resources\js\controller\snapshot.js" />
+    <EmbeddedResource Include="Resources\js\directive\flot.js" />
+    <EmbeddedResource Include="Resources\js\filter\formatter\client.js" />
+    <EmbeddedResource Include="Resources\images\chat.ico" />
+    <EmbeddedResource Include="Resources\templates\dialog\api.html" />
+    <EmbeddedResource Include="Resources\templates\dialog\config.html" />
+    <EmbeddedResource Include="Resources\templates\dialog\error.html" />
+    <EmbeddedResource Include="Resources\templates\dialog\password.html" />
+    <EmbeddedResource Include="Resources\templates\dialog\serverChannel.html" />
+    <EmbeddedResource Include="Resources\templates\dialog\xdcc.html" />
+    <EmbeddedResource Include="Resources\js\filter\formatter\search.js" />
+    <EmbeddedResource Include="Scripts\jquery-2.1.1.min.js" />
+    <EmbeddedResource Include="Scripts\flot\jquery.flot.time.min.js" />
+    <EmbeddedResource Include="Scripts\flot\jquery.flot.pie.min.js" />
+    <EmbeddedResource Include="Content\bootstrap.min.css" />
+    <EmbeddedResource Include="Content\normalize.css" />
+    <EmbeddedResource Include="fonts\glyphicons-halflings-regular.woff" />
+    <EmbeddedResource Include="fonts\glyphicons-halflings-regular.ttf" />
+    <EmbeddedResource Include="fonts\glyphicons-halflings-regular.svg" />
+    <EmbeddedResource Include="fonts\glyphicons-halflings-regular.eot" />
+    <EmbeddedResource Include="Scripts\require.js" />
+    <EmbeddedResource Include="Resources\js\filter\formatter\main.js" />
+    <EmbeddedResource Include="Scripts\moment-with-locales.min.js" />
+    <EmbeddedResource Include="Scripts\jquery.signalR-2.1.2.min.js" />
+    <EmbeddedResource Include="Scripts\bootstrap.min.js" />
+    <EmbeddedResource Include="Scripts\angular-ui\ui-bootstrap-tpls.min.js" />
+    <EmbeddedResource Include="Resources\js\config\config-offline.js" />
+    <EmbeddedResource Include="Scripts\angular-cookie.min.js" />
+    <EmbeddedResource Include="Scripts\favico.min.js" />
+    <EmbeddedResource Include="Scripts\ng-table.min.js" />
+    <EmbeddedResource Include="Content\ng-table.min.css" />
+    <EmbeddedResource Include="Resources\xg.appcache" />
+    <EmbeddedResource Include="Resources\js\signalr-offline.js" />
+    <EmbeddedResource Include="Resources\css\init.css" />
+    <EmbeddedResource Include="Resources\templates\dialog\offline.html" />
+    <EmbeddedResource Include="Resources\js\controller\dialog\offline.js" />
+    <EmbeddedResource Include="Scripts\angular.min.js" />
+    <EmbeddedResource Include="Scripts\angular.min.js.map" />
+    <EmbeddedResource Include="Scripts\angular-animate.min.js" />
+    <EmbeddedResource Include="Scripts\angular-animate.min.js.map" />
+    <EmbeddedResource Include="Scripts\angular-sanitize.min.js" />
+    <EmbeddedResource Include="Scripts\angular-sanitize.min.js.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\js\app.js" />
+    <EmbeddedResource Include="Resources\index.html" />
+    <EmbeddedResource Include="Resources\favicon.ico" />
+    <EmbeddedResource Include="Resources\css\xg.css" />
+    <EmbeddedResource Include="Resources\css\tango-colors.css" />
+    <EmbeddedResource Include="Resources\css\animation.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\js\libs\angular-translate.min.js" />
+    <EmbeddedResource Include="Resources\js\libs\domReady.js" />
+    <EmbeddedResource Include="Resources\js\libs\jquery.flot.axislabels.js" />
+    <EmbeddedResource Include="Resources\js\libs\jquery.knob.js" />
+    <EmbeddedResource Include="Resources\js\libs\sha256.js" />
+    <EmbeddedResource Include="Resources\js\index.js" />
+    <EmbeddedResource Include="Resources\js\controller\notification.js" />
+    <EmbeddedResource Include="Resources\js\controller\dialog\index.js" />
+    <EmbeddedResource Include="Resources\js\controller\dialog\module.js" />
+    <EmbeddedResource Include="Resources\js\controller\dialog\password.js" />
+    <EmbeddedResource Include="Resources\js\controller\dialog\serverChannel.js" />
+    <EmbeddedResource Include="Resources\js\controller\dialog\xdcc.js" />
+    <EmbeddedResource Include="Resources\js\filter\formatter\channel.js" />
+    <EmbeddedResource Include="Resources\js\filter\formatter\notification.js" />
+    <EmbeddedResource Include="Resources\js\filter\formatter\server.js" />
+    <EmbeddedResource Include="Resources\css\animate.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XG.Business\XG.Business.csproj">
+      <Project>{56891BE8-B112-49A5-91C2-B250D36F80FE}</Project>
+      <Name>XG.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XG.Config\XG.Config.csproj">
+      <Project>{DD17AB20-C940-4EB9-9F2A-53A5914D7914}</Project>
+      <Name>XG.Config</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XG.Model\XG.Model.csproj">
+      <Project>{20384A6F-DEBE-438D-9B38-AD2AC36F5B21}</Project>
+      <Name>XG.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XG.Plugin\XG.Plugin.csproj">
+      <Project>{258B9C1A-AA53-4E23-8486-2BCA0FE65538}</Project>
+      <Name>XG.Plugin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XG.Extensions\XG.Extensions.csproj">
+      <Project>{846CAB27-130D-4B2D-8823-93A3E8B34AEE}</Project>
+      <Name>XG.Extensions</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\js\controller\main.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\js\controller\dashboard.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\js\directive\index.js" />
+    <EmbeddedResource Include="Resources\js\directive\knob.js" />
+    <EmbeddedResource Include="Resources\js\directive\module.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\js\directive\focus.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\js\controller\dialog\config.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\js\controller\dialog\error.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\templates\dialog\shutdown.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\js\controller\dialog\shutdown.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\flot\jquery.flot.min.js" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Search\" />
+    <Folder Include="Job\" />
+  </ItemGroup>
+</Project>
