@@ -1,3 +1,15 @@
+# Modified v0.1
+I'm not sure if the original is still maintained but I modified this version and plan to continue to make changes to support my needs, though I don't mind making it public.
+
+I'm an amature when it comes to C# based development,
+I've simply hacked together some API stuff to allow me to generate a POST from sickbeard and add packets automatically as I found the original API implementation to be broken.
+
+I do plan to add an auto extract feature and some additional checking stuff as I've ran into a few issues during the auto downloading process where a package is no longer available even though it's on the indexer, and such...
+
+The plan is to some how blacklist that package in sickbeard and make it select a new one out of the options It's been given.
+
+
+
 XG, called __X__dcc __G__rabscher, is a XDCC download manager. Grabscher is the german word for grabber :-)
 
 
