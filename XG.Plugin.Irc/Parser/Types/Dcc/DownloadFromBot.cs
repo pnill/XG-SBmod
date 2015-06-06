@@ -38,12 +38,13 @@ namespace XG.Plugin.Irc.Parser.Types.Dcc
 	{
 		public override bool Parse(Message aMessage)
 		{
+
 			if (!aMessage.Text.StartsWith("\u0001DCC ", StringComparison.Ordinal))
 			{
 				return false;
 			}
 			string text = aMessage.Text.Substring(5, aMessage.Text.Length - 6);
-
+            
 			Bot tBot = aMessage.Channel.Bot(aMessage.Nick);
 			if (tBot == null)
 			{
@@ -68,6 +69,7 @@ namespace XG.Plugin.Irc.Parser.Types.Dcc
 			int tPort = 0;
 			File tFile = FileActions.TryGetFile(tPacket.RealName, tPacket.RealSize);
 			Int64 startSize = 0;
+            Int64 Token = 0;
 
 			if (tFile != null)
 			{
@@ -82,10 +84,11 @@ namespace XG.Plugin.Irc.Parser.Types.Dcc
 			}
 
 			string[] tDataList = text.Split(' ');
+    
 			if (tDataList[0] == "SEND")
 			{
 				Log.Info("Parse() DCC from " + tBot);
-
+                //DCC SEND Halt.and.Catch.Fire.S01E01.HDTV.x264-BATV.mp4 1347834870 0 3240748601 213
 				// if the name of the file contains spaces, we have to replace em
 				if (text.StartsWith("SEND \"", StringComparison.CurrentCulture))
 				{
@@ -116,15 +119,14 @@ namespace XG.Plugin.Irc.Parser.Types.Dcc
 					return false;
 				}
 
+                // This is a reverse DCC specification we should be handling it not ignoring it...
+                // http://content.wow.com/wiki/Fserve#Reverse_.2F_Firewall_DCC
+
 				// we cant connect to port <= 0
 				if (tPort <= 0)
-				{
-					Log.Error("Parse() " + tBot + " submitted wrong port: " + tPort + ", disabling packet");
-					tPacket.Enabled = false;
-					tPacket.Commit();
-
-					FireNotificationAdded(Notification.Types.BotSubmittedWrongData, tBot);
-					return false;
+				{                  
+                    Token = int.Parse(tDataList[5]);
+                    Console.WriteLine("We're accepting reverse XDCC token: {0}", Token);
 				}
 
 				tPacket.RealName = tDataList[1];
@@ -208,7 +210,15 @@ namespace XG.Plugin.Irc.Parser.Types.Dcc
 			if (isOk)
 			{
 				Log.Info("Parse() downloading from " + tBot + " - Starting: " + startSize + " - Size: " + tPacket.RealSize);
+
 				FireAddDownload(this, new EventArgs<Packet, long, IPAddress, int>(tPacket, startSize, tBot.IP, tPort));
+                
+                //It's a reverse DCC Connection lets tell the bot we're listening.
+                if(tPort == 0)
+                {
+                    Log.Info("Parse() - Reverse DCC - Sending our info to bot.");
+                    FireSendMessage(this, new EventArgs<Server,SendType, string, string>(aMessage.Channel.Parent, SendType.CtcpRequest, tBot.Name, "DCC SEND " + tPacket.RealName + " IPLONG 9995 " + tPacket.RealSize + " " + Token));
+                }
 			}
 			return true;
 		}

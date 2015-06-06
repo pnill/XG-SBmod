@@ -33,6 +33,7 @@ using XG.Config.Properties;
 using XG.Extensions;
 using XG.Model.Domain;
 using log4net;
+using XG.Plugin.Irc.Parser;
 
 namespace XG.Plugin.Irc
 {
@@ -69,6 +70,9 @@ namespace XG.Plugin.Irc
 		public Int64 MaxData { get; set; }
 
 		TcpClient _tcpClient;
+        TcpListener _tcpListener;
+        bool ReverseDCC = false;
+
 		BinaryWriter _writer;
 		BinaryReader _reader;
 
@@ -108,79 +112,173 @@ namespace XG.Plugin.Irc
 			Packet.Parent.QueueTime = 0;
 			Packet.Parent.Commit();
 
-			using (_tcpClient = new TcpClient())
-			{
-				_tcpClient.SendTimeout = Settings.Default.DownloadTimeoutTime * 1000;
-				_tcpClient.ReceiveTimeout = Settings.Default.DownloadTimeoutTime * 1000;
+            if( Port == 0 )
+            {
+                ReverseDCC = true;
+            }
 
-				try
-				{
-					_tcpClient.Connect(IP, Port);
-					_log.Info("StartRun() connected");
+            if (ReverseDCC == false)
+            {
+                using (_tcpClient = new TcpClient())
+                {
+                    _tcpClient.SendTimeout = Settings.Default.DownloadTimeoutTime * 1000;
+                    _tcpClient.ReceiveTimeout = Settings.Default.DownloadTimeoutTime * 1000;
 
-					using (Stream stream = new ThrottledStream(_tcpClient.GetStream(), Settings.Default.MaxDownloadSpeedInKB * 1000))
-					{
-						InitializeWriting();
+                    try
+                    {
+                        _tcpClient.Connect(IP, Port);
+                        _log.Info("StartRun() connected");
 
-						using (var reader = new BinaryReader(stream))
-						{
-							Int64 missing = MaxData;
-							Int64 max = Settings.Default.DownloadPerReadBytes;
-							byte[] data = null;
+                        using (Stream stream = new ThrottledStream(_tcpClient.GetStream(), Settings.Default.MaxDownloadSpeedInKB * 1000))
+                        {
+                            InitializeWriting();
 
-							// start watch to look if our connection is still receiving data
-							StartWatch(Settings.Default.DownloadTimeoutTime, IP + ":" + Port);
+                            using (var reader = new BinaryReader(stream))
+                            {
+                                Int64 missing = MaxData;
+                                Int64 max = Settings.Default.DownloadPerReadBytes;
+                                byte[] data = null;
 
-							int failCounter = 0;
-							do
-							{
-								data = reader.ReadBytes((int) (missing < max ? missing : max));
-								LastContact = DateTime.Now;
+                                // start watch to look if our connection is still receiving data
+                                StartWatch(Settings.Default.DownloadTimeoutTime, IP + ":" + Port);
 
-								if (data != null && data.Length != 0)
-								{
-									SaveData(data);
-									missing -= data.Length;
-								}
-								else
-								{
-									failCounter++;
-									_log.Warn("StartRun() no data received - " + failCounter);
+                                int failCounter = 0;
+                                do
+                                {
+                                    data = reader.ReadBytes((int)(missing < max ? missing : max));
+                                    LastContact = DateTime.Now;
 
-									if (failCounter > Settings.Default.MaxNoDateReceived)
-									{
-										_log.Warn("StartRun() no data received - skipping");
-										break;
-									}
-								}
-							} while (AllowRunning && missing > 0);
-						}
+                                    if (data != null && data.Length != 0)
+                                    {
+                                        SaveData(data);
+                                        missing -= data.Length;
+                                    }
+                                    else
+                                    {
+                                        failCounter++;
+                                        _log.Warn("StartRun() no data received - " + failCounter);
 
-						_log.Info("StartRun() end");
-					}
-				}
-				catch (ObjectDisposedException) {}
-				catch (Exception ex)
-				{
-					_log.Fatal("StartRun()", ex);
-				}
-				finally
-				{
-					_log.Info("StartRun() finishing");
-					FinishWriting();
+                                        if (failCounter > Settings.Default.MaxNoDateReceived)
+                                        {
+                                            _log.Warn("StartRun() no data received - skipping");
+                                            break;
+                                        }
+                                    }
+                                } while (AllowRunning && missing > 0);
+                            }
 
-					_tcpClient = null;
-					_writer = null;
-				}
-			}
+                            _log.Info("StartRun() end");
+                        }
+                    }
+                    catch (ObjectDisposedException) { }
+                    catch (Exception ex)
+                    {
+                        _log.Fatal("StartRun()", ex);
+                    }
+                    finally
+                    {
+                        _log.Info("StartRun() finishing");
+                        FinishWriting();
+
+                        _tcpClient = null;
+                        _writer = null;
+                    }
+                }
+            }
+            else
+            {
+                //Reverse XDCC ( http://content.wow.com/wiki/Fserve#Reverse_.2F_Firewall_DCC )
+                try
+                {
+                    Int32 port = 9995;
+                    IPAddress localAddr = IPAddress.Parse("192.168.0.4");
+
+                    _tcpListener = new TcpListener(localAddr, port);
+
+                    _tcpListener.Start();
+
+                    Console.WriteLine("StartRun(Reverse DCC) - Waiting for bot to connect...");
+                    _tcpClient = _tcpListener.AcceptTcpClient();
+
+                     Console.WriteLine("StartRun(Reverse DCC) - Bot has connected!");
+
+                     _tcpClient.SendTimeout = Settings.Default.DownloadTimeoutTime * 1000;
+                     _tcpClient.ReceiveTimeout = Settings.Default.DownloadTimeoutTime * 1000;
+                     
+                     using (Stream stream = new ThrottledStream(_tcpClient.GetStream(), Settings.Default.MaxDownloadSpeedInKB * 1000))
+                     {
+                         InitializeWriting();
+                         using (var reader = new BinaryReader(stream))
+                         {
+                             Int64 missing = MaxData;
+                             Int64 max = Settings.Default.DownloadPerReadBytes;
+                             byte[] data = null;
+
+                             // start watch to look if our connection is still receiving data
+                             StartWatch(Settings.Default.DownloadTimeoutTime, IP + ":" + Port);
+
+                             int failCounter = 0;
+                             do
+                             {
+                                 data = reader.ReadBytes((int)(missing < max ? missing : max));
+                                 LastContact = DateTime.Now;
+
+                                 if (data != null && data.Length != 0)
+                                 {
+                                     SaveData(data);
+                                     missing -= data.Length;
+                                 }
+                                 else
+                                 {
+                                     failCounter++;
+                                     Console.WriteLine("StartRun(Reverse DCC) no data received - " + failCounter);
+
+                                     if (failCounter > Settings.Default.MaxNoDateReceived)
+                                     {
+                                         Console.WriteLine("StartRun(Reverse DCC) no data received - skipping");
+                                         break;
+                                     }
+                                 }
+                             } while (AllowRunning && missing > 0);
+
+                         }
+                         Console.WriteLine("StartRun(Reverse DCC) end");
+                     }
+                     
+                    
+                }
+                catch (ObjectDisposedException) { }
+                catch(SocketException e)
+                {
+                    Console.WriteLine("SocketException: {0}", e);
+                }
+                finally
+                {
+                    _log.Info("StartRun() Finishing (Reverse DCC)");
+                    FinishWriting();
+
+                    _writer = null;
+                    _tcpClient = null;
+                    _tcpListener.Stop();
+                    _tcpListener = null;
+                }
+
+            }
 		}
 
 		protected override void StopRun()
 		{
-			if (_tcpClient != null)
-			{
-				_tcpClient.Close();
-			}
+          
+           if (_tcpClient != null)
+           {
+                _tcpClient.Close();
+           }
+
+           if(_tcpListener != null)
+           {
+               _tcpListener.Stop();
+           }
+          
 		}
 
 		#endregion
@@ -210,7 +308,7 @@ namespace XG.Plugin.Irc
 				return;
 			}
 
-			// wtf?
+			
 			if (StartSize == File.Size)
 			{
 				_log.Error("InitializeWriting(" + Packet + ") startSize = File.Size (" + StartSize + ")");
