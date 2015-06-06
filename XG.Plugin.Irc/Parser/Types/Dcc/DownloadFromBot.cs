@@ -88,7 +88,6 @@ namespace XG.Plugin.Irc.Parser.Types.Dcc
 			if (tDataList[0] == "SEND")
 			{
 				Log.Info("Parse() DCC from " + tBot);
-                //DCC SEND Halt.and.Catch.Fire.S01E01.HDTV.x264-BATV.mp4 1347834870 0 3240748601 213
 				// if the name of the file contains spaces, we have to replace em
 				if (text.StartsWith("SEND \"", StringComparison.CurrentCulture))
 				{
