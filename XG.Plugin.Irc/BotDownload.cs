@@ -28,6 +28,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Diagnostics;
 using XG.Business.Helper;
 using XG.Config.Properties;
 using XG.Extensions;
@@ -192,59 +193,108 @@ namespace XG.Plugin.Irc
                     Int32 port = 9995;
                     IPAddress localAddr = IPAddress.Parse("192.168.0.4");
 
-                    _tcpListener = new TcpListener(localAddr, port);
+                  //IP retrieval methods are too unreliable, should make this based on either user input or listen on all (Listening on ALL for now).
+                  //  IPAddress localAddr = NetworkActions.getLANAddress();
+                  //  if(localAddr == null)
+                   // {
+                  //      Console.WriteLine("Reverse DCC: Failed to get local address, trying second method");
+                  // IPAddress localAddr = NetworkActions.getLANAddress2();
+                  //  }
+
+                    Stopwatch watch = new Stopwatch();
+                    bool botConnected = true;
+
+                    _tcpListener = new TcpListener(localAddr, iPort);
+
+                    //Part of that race condition mentioned earlier.
+                    NetworkActions.CurPort++;
 
                     _tcpListener.Start();
 
-                    Console.WriteLine("StartRun(Reverse DCC) - Waiting for bot to connect...");
-                    _tcpClient = _tcpListener.AcceptTcpClient();
+                    watch.Start();
+                 
+                    //Check if a client is available without blocking in a separate function like AcceptTCPClient Does
+                    //This way we can check the amount of time that has passed since we asked the bot to connect to us.
+                    Console.WriteLine("Reverse DCC() Listening on " + localAddr + ":" + iPort);
+                    Console.WriteLine("Reverse DCC() - Waiting for bot to connect...");
 
-                     Console.WriteLine("StartRun(Reverse DCC) - Bot has connected!");
 
-                     _tcpClient.SendTimeout = Settings.Default.DownloadTimeoutTime * 1000;
-                     _tcpClient.ReceiveTimeout = Settings.Default.DownloadTimeoutTime * 1000;
-                     
-                     using (Stream stream = new ThrottledStream(_tcpClient.GetStream(), Settings.Default.MaxDownloadSpeedInKB * 1000))
-                     {
-                         InitializeWriting();
-                         using (var reader = new BinaryReader(stream))
-                         {
-                             Int64 missing = MaxData;
-                             Int64 max = Settings.Default.DownloadPerReadBytes;
-                             byte[] data = null;
+                    while (!_tcpListener.Pending())
+                    {
+                        
+                       
+                        //If the bot doesn't connect to us within 1 minute it's probably not going to, lets abort the operation and report it as failed.
+                        if( watch.ElapsedMilliseconds > 60000 )
+                        {
+                            Console.WriteLine("Reverse DCC() - Timeout - Bot never connected");
+                            Console.WriteLine("Reverse DCC() - Either bot is broken or your firewall/router is blocking it (Ports 9995-9999)");
+                            watch.Stop();
 
-                             // start watch to look if our connection is still receiving data
-                             StartWatch(Settings.Default.DownloadTimeoutTime, IP + ":" + Port);
+                            botConnected = false;
+                            break;
+                        }
+                    }
 
-                             int failCounter = 0;
-                             do
-                             {
-                                 data = reader.ReadBytes((int)(missing < max ? missing : max));
-                                 LastContact = DateTime.Now;
+                    //stop the watch if the bot connected it wouldn't have been stopped by the timeout.
+                    if (watch.IsRunning)
+                    {
+                        Console.WriteLine("Reverse DCC() Bot connected to us after {0} seconds", watch.Elapsed.Seconds);
+                        watch.Stop();
+                    }
 
-                                 if (data != null && data.Length != 0)
-                                 {
-                                     SaveData(data);
-                                     missing -= data.Length;
-                                 }
-                                 else
-                                 {
-                                     failCounter++;
-                                     Console.WriteLine("StartRun(Reverse DCC) no data received - " + failCounter);
+                    if (botConnected)
+                    {
+                        _tcpClient = _tcpListener.AcceptTcpClient();
+                        Console.WriteLine("Reverse DCC() - Starting download");
 
-                                     if (failCounter > Settings.Default.MaxNoDateReceived)
-                                     {
-                                         Console.WriteLine("StartRun(Reverse DCC) no data received - skipping");
-                                         break;
-                                     }
-                                 }
-                             } while (AllowRunning && missing > 0);
+                        _tcpClient.SendTimeout = Settings.Default.DownloadTimeoutTime * 1000;
+                        _tcpClient.ReceiveTimeout = Settings.Default.DownloadTimeoutTime * 1000;
 
-                         }
-                         Console.WriteLine("StartRun(Reverse DCC) end");
-                     }
-                     
-                    
+                        using (Stream stream = new ThrottledStream(_tcpClient.GetStream(), Settings.Default.MaxDownloadSpeedInKB * 1000))
+                        {
+                            InitializeWriting();
+                            using (var reader = new BinaryReader(stream))
+                            {
+                                Int64 missing = MaxData;
+                                Int64 max = Settings.Default.DownloadPerReadBytes;
+                                byte[] data = null;
+
+                                // start watch to look if our connection is still receiving data
+                                StartWatch(Settings.Default.DownloadTimeoutTime, IP + ":" + Port);
+
+                                int failCounter = 0;
+                                do
+                                {
+                                    data = reader.ReadBytes((int)(missing < max ? missing : max));
+                                    LastContact = DateTime.Now;
+
+                                    if (data != null && data.Length != 0)
+                                    {
+                                        SaveData(data);
+                                        missing -= data.Length;
+                                    }
+                                    else
+                                    {
+                                        failCounter++;
+                                        Console.WriteLine("Reverse DCC (No Data Received) " + failCounter);
+
+                                        if (failCounter > Settings.Default.MaxNoDateReceived)
+                                        {
+                                            Console.WriteLine("Reverse DCC (No Data Received)- skipping");
+                                            break;
+                                        }
+                                    }
+                                } while (AllowRunning && missing > 0);
+
+                            }
+                            Console.WriteLine("Reverse DCC (end)");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Reverse DCC( failed ) - bot never connected.");
+                    }
+                 
                 }
                 catch (ObjectDisposedException) { }
                 catch(SocketException e)
@@ -255,11 +305,13 @@ namespace XG.Plugin.Irc
                 {
                     _log.Info("StartRun() Finishing (Reverse DCC)");
                     FinishWriting();
-
                     _writer = null;
                     _tcpClient = null;
                     _tcpListener.Stop();
                     _tcpListener = null;
+
+                    //Back to that race condition again;
+                    NetworkActions.CurPort--;
                 }
 
             }

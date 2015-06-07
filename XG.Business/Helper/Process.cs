@@ -40,6 +40,7 @@ namespace XG.Business.Helper
 		public string Arguments { get; set; }
 		public string Output { get; private set; }
 		public string Error { get; private set; }
+        public bool Silent { get; set; }
 
 		#endregion
 
@@ -49,8 +50,12 @@ namespace XG.Business.Helper
 		{
 			bool result = true;
 			
-			Log.Info("Run(" + Command + ", " + Arguments + ")");
-			try
+            if(!Silent)
+            {
+			    Log.Info("Run(" + Command + ", " + Arguments + ")");
+            }
+
+            try
 			{
 				var p = new System.Diagnostics.Process
 				{
@@ -84,20 +89,23 @@ namespace XG.Business.Helper
 			}
 			catch (Exception ex)
 			{
-				Log.Fatal("Run(" + Command + ", " + Arguments + ")", ex);
-				result = false;
+				    Log.Fatal("Run(" + Command + ", " + Arguments + ")", ex);
+				    result = false;
 			}
 			finally
 			{
-				if (!String.IsNullOrWhiteSpace(Output))
-				{
-					Log.Info("Run(" + Command + ", " + Arguments + ") Output: " + Output);
-				}
-				if (!String.IsNullOrWhiteSpace(Error))
-				{
-					Log.Error("Run(" + Command + ", " + Arguments + ") Error: " + Error);
-					result = false;
-				}
+                if (!Silent)
+                {
+                    if (!String.IsNullOrWhiteSpace(Output))
+                    {
+                        Log.Info("Run(" + Command + ", " + Arguments + ") Output: " + Output);
+                    }
+                    if (!String.IsNullOrWhiteSpace(Error))
+                    {
+                        Log.Error("Run(" + Command + ", " + Arguments + ") Error: " + Error);
+                        result = false;
+                    }
+                }
 			}
 
 			return result;

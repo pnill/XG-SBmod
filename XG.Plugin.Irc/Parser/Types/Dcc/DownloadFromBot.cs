@@ -32,6 +32,7 @@ using XG.Config.Properties;
 using XG.Extensions;
 using XG.Model.Domain;
 
+
 namespace XG.Plugin.Irc.Parser.Types.Dcc
 {
 	public class DownloadFromBot : AParser
@@ -125,7 +126,7 @@ namespace XG.Plugin.Irc.Parser.Types.Dcc
 				if (tPort <= 0)
 				{                  
                     Token = int.Parse(tDataList[5]);
-                    Console.WriteLine("We're accepting reverse XDCC token: {0}", Token);
+                    Console.WriteLine("Reverse DCC() Token: {0}", Token);
 				}
 
 				tPacket.RealName = tDataList[1];
@@ -214,8 +215,16 @@ namespace XG.Plugin.Irc.Parser.Types.Dcc
                 //It's a reverse DCC Connection lets tell the bot we're listening.
                 if(tPort == 0)
                 {
-                    Log.Info("Parse() - Reverse DCC - Sending our info to bot.");
-                    FireSendMessage(this, new EventArgs<Server,SendType, string, string>(aMessage.Channel.Parent, SendType.CtcpRequest, tBot.Name, "DCC SEND " + tPacket.RealName + " IPLONG 9995 " + tPacket.RealSize + " " + Token));
+                    //This is a race condition waiting to happen :)
+                    int PortsInUse = NetworkActions.CurPort;
+                    int iPort = NetworkActions.Ports[PortsInUse];
+                    long WanAddr = NetworkActions.IP2Long(NetworkActions.getWANAddress());
+                    string Wan = new IPAddress(WanAddr).ToString();
+
+                    Console.WriteLine("Reverse DCC() - Sending our info to bot.");
+                    string Message = "DCC SEND" + " " + tPacket.RealName + " " + WanAddr + " " + iPort + " " + tPacket.RealSize + " " + Token;
+         
+                    FireSendMessage(this, new EventArgs<Server,SendType, string, string>(aMessage.Channel.Parent, SendType.CtcpRequest, tBot.Name, Message));
                 }
 			}
 			return true;
