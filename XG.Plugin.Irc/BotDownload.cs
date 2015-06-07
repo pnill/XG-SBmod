@@ -33,7 +33,6 @@ using XG.Config.Properties;
 using XG.Extensions;
 using XG.Model.Domain;
 using log4net;
-using XG.Plugin.Irc.Parser;
 
 namespace XG.Plugin.Irc
 {

@@ -243,9 +243,15 @@ namespace XG.Plugin.Irc
 
 		void ClientOnReadLine(object sender, ReadLineEventArgs e)
 		{
-			_events.Enqueue(new IrcEvent { Type = IrcEvent.EventType.ReadLine, Event = e });
-			_waitHandle.Set();
-		}
+            try // hax to prevent crash, not sure what the problem is so I'm just going to catch the exception.
+            {
+                _events.Enqueue(new IrcEvent { Type = IrcEvent.EventType.ReadLine, Event = e });
+                _waitHandle.Set();
+            }catch(System.ArgumentException ae )
+            {
+
+            }
+        }
 
 		void ClientOnTopic(object sender, TopicEventArgs e)
 		{

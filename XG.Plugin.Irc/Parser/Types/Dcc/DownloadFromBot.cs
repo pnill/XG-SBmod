@@ -209,7 +209,6 @@ namespace XG.Plugin.Irc.Parser.Types.Dcc
 			if (isOk)
 			{
 				Log.Info("Parse() downloading from " + tBot + " - Starting: " + startSize + " - Size: " + tPacket.RealSize);
-
 				FireAddDownload(this, new EventArgs<Packet, long, IPAddress, int>(tPacket, startSize, tBot.IP, tPort));
                 
                 //It's a reverse DCC Connection lets tell the bot we're listening.

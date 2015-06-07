@@ -38,6 +38,11 @@ namespace XG.Plugin.Webserver.Nancy.Api
 	{
 		protected ApiModule() : base("/api/1.0") {
 
+            Get["/ApiTest"] = _ =>
+            {
+                return "ok";
+            };
+
             Post["/parseXDCC"] = _ =>
             {
 
