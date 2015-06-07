@@ -1,12 +1,11 @@
-# Modified v0.1
-I'm not sure if the original is still maintained but I modified this version and plan to continue to make changes to support my needs, though I don't mind making it public.
+# XG-SBMod
+This mod changes a few things in the original XG system.
 
-I'm an amature when it comes to C# based development,
-I've simply hacked together some API stuff to allow me to generate a POST from sickbeard and add packets automatically as I found the original API implementation to be broken.
+1) It adds new APIs which are used to handle accepting packets from SickBeard-XG ( Also found on this github)
 
-I do plan to add an auto extract feature and some additional checking stuff as I've ran into a few issues during the auto downloading process where a package is no longer available even though it's on the indexer, and such...
+2) It adds support for Reverse DCC Connnections based on the following specification ( http://content.wow.com/wiki/Fserve#Reverse_.2F_Firewall_DCC ) - RESUME support is not added yet for reverse connect.
 
-The plan is to some how blacklist that package in sickbeard and make it select a new one out of the options It's been given.
+3) It will/has already stripped out most of the extended functionality of the original XG client this includes the original API, the search/indexing functions/other various things that are not needed to process SickBeard-XG submitted packs.
 
 
 #Original ReadMe
