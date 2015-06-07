@@ -190,8 +190,10 @@ namespace XG.Plugin.Irc
                 //Reverse XDCC ( http://content.wow.com/wiki/Fserve#Reverse_.2F_Firewall_DCC )
                 try
                 {
-                    Int32 port = 9995;
-                    IPAddress localAddr = IPAddress.Parse("192.168.0.4");
+                    //This is race condition waiting to happen :)
+                    int PortsInUse = NetworkActions.CurPort;
+                    int iPort = NetworkActions.Ports[PortsInUse];
+                    IPAddress localAddr = IPAddress.Any;
 
                   //IP retrieval methods are too unreliable, should make this based on either user input or listen on all (Listening on ALL for now).
                   //  IPAddress localAddr = NetworkActions.getLANAddress();
