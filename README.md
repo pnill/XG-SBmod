@@ -1,4 +1,10 @@
-# XG-SBMod
+# XG-SBMod 0.1
+I've introduced changes which could possibly break the Windows build and do however, Fix the Linux building process.
+
+Building for linux should now be possible via xbuild within the root dir of the project,
+From here it's expected everything should build normally and work out of the box with none of the previously enocuntered issues or workarounds (Copying Nowin.dll/HTTPListener).
+
+# XG-SBMod 0.0
 This mod changes a few things in the original XG system.
 
 1) It adds new APIs which are used to handle accepting packets from SickBeard-XG ( Also found on this github)
